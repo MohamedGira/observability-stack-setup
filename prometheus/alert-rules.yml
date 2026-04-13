@@ -1,0 +1,21 @@
+
+groups:
+  - name: example_rules 
+    rules:
+      - alert: TooManyYesProcesses
+        expr: namedprocess_namegroup_num_procs{groupname="yes_process"} > 5
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Too many yes processes"
+          description: "Number of 'yes' processes is above 5"
+
+      - alert: YesProcessHighCPU
+        expr: rate(namedprocess_namegroup_cpu_seconds_total{groupname="yes_process"}[1m]) > 0.8
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High CPU usage by yes processes"
+          description: "CPU usage is above 80%"
