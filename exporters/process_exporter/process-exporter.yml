@@ -1,0 +1,7 @@
+process_names:
+  - name: "yes_process"
+    cmdline: ["yes"]
+  - name: "psql_process"
+    cmdline: ["psql"]
+  - name: "sleep_process"
+    cmdline: ["sleep"]

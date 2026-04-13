@@ -1,0 +1,15 @@
+services:
+
+  process_exporter:
+    image: ncabatoff/process-exporter
+    container_name: process_exporter
+    ports:
+      - "9256:9256"
+    privileged: true
+    command: -procfs /host/proc -config.path /config/process-exporter.yml
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc
+      - ./process_exporter/process-exporter.yml:/config/process-exporter.yml
+
+    
