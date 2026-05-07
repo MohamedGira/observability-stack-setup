@@ -1,16 +1,37 @@
 
 groups:
-  - name: example_rules 
+  - name: NoadLoad
     rules:
-      - alert: TooManyYesProcesses
-        expr: namedprocess_namegroup_num_procs{groupname="yes_process"} > 5
-        for: 1m
+      - alert: HighNodeLoad
+        expr:  1- avg by (host) (rate(node_cpu_seconds_total{mode="idle"}[1m])) > 0.8
+        for: 15m
         labels:
           severity: warning
         annotations:
-          summary: "Too many yes processes"
-          description: "Number of 'yes' processes is above 5"
+          summary: "High CPU load on {{ $labels.host }}"
+          description: "CPU load is {{ $value }} (>80%) on {{ $labels.host }}"
 
+      - alert: ExcessiveNodeLoad
+        expr:  1- avg by (host) (rate(node_cpu_seconds_total{mode="idle"}[1m])) > 0.95
+        for: 15m
+        labels:
+          severity: severe
+        annotations:
+          summary: "High CPU load on {{ $labels.host }}"
+          description: "CPU load is {{ $value }} (>95%) on {{ $labels.host }}"
+
+      - alert: NodeDown
+        expr: up{job="node"} == 0
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Node {{ $labels.host }} is Down"
+          description: "Node {{ $labels.host }} is Down for 15 minutes"
+          
+          
+  - name: Processes
+    rules:
       - alert: YesProcessHighCPU
         expr: rate(namedprocess_namegroup_cpu_seconds_total{groupname="yes_process"}[1m]) > 0.8
         for: 2m
